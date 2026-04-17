@@ -1845,3 +1845,117 @@ function handleDeath(source) {
     }
     saveGame();
 }
+
+// ============================================
+// تصدير جميع الدوال ككائن واحد (للتوافق مع main.js)
+// ============================================
+
+export const GameEngine = {
+    // دوال التخزين والإدارة
+    startNewGame,
+    loadGame,
+    saveGame,
+    deleteGame,
+    initializeSlots,
+    hasAnySavedGame,
+    
+    // دوال الوقت والطقس
+    advanceTime,
+    getCurrentTime,
+    formatTime,
+    getCurrentPeriod,
+    getTotalDays,
+    getCurrentSeason,
+    updateWeather,
+    setWeather,
+    getLunarDay,
+    getMoonPhase,
+    getMoonPhaseName,
+    isNightTime,
+    isDayTime,
+    fastForwardHours,
+    advanceToTime,
+    
+    // دوال Game Loop
+    startGameLoop,
+    stopGameLoop,
+    togglePause,
+    isGamePaused,
+    setPaused,
+    isGameLoopRunning,
+    
+    // دوال الإحصاءات
+    recalculateMaxStats,
+    updateXPNeeded,
+    addXP,
+    levelUp,
+    increaseStat,
+    getXPNeeded,
+    getLevelProgress,
+    
+    // دوال المخزون
+    createItemInstance,
+    addItem,
+    removeItem,
+    useItem,
+    equipItem,
+    unequipItem,
+    getEquippedItem,
+    isSlotEquipped,
+    getAllEquippedItems,
+    isInventoryFull,
+    getInventorySize,
+    sortInventory,
+    
+    // دوال الأحداث والتنقل
+    setEvent,
+    getCurrentEvent,
+    getCurrentEventId,
+    executeAction,
+    addChoice,
+    removeChoice,
+    setChoices,
+    canSaveInCurrentEvent,
+    getDiscoveredLocations,
+    discoverLocation,
+    
+    // دوال الموارد
+    takeDamage,
+    heal,
+    consumeStamina,
+    restoreStamina,
+    consumeFocus,
+    restoreFocus,
+    consumeAether,
+    restoreAether,
+    consumeHunger,
+    restoreHunger,
+    addCoins,
+    spendCoins,
+    getResource,
+    isAlive,
+    getResourcePercent,
+    
+    // دوال المقدمة
+    showIntro,
+    closeIntro,
+    skipIntro,
+    isIntroActive,
+    getIntroText,
+    getIntroProgress,
+    
+    // دوال النوم
+    startSleeping,
+    wakeUp,
+    leaveBed,
+    
+    // دوال الحفظ التلقائي
+    setAutoSaveEnabled,
+    isAutoSaveEnabled,
+    
+    // دوال الموت
+    handleDeath,
+    
+    // التخزين
+    Storage
+};
