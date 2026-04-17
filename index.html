@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>YOUR STORY IDLE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="tooltip"></div>
+
+<!-- INTRO SCREEN -->
+<div id="intro-screen">
+    <div class="intro-text-container">
+        <div class="intro-story-text" id="intro-story-text"></div>
+    </div>
+    <button class="intro-skip" onclick="GameEngine.skipIntro()">SKIP</button>
+</div>
+
+<div id="modal-overlay" class="modal-overlay">
+    <div class="modal-box">
+        <p id="modal-message">ARE YOU SURE?</p>
+        <input type="text" id="modal-input" placeholder='Type "Yes" to confirm'>
+        <div class="modal-buttons">
+            <button class="modal-btn-sure" id="modal-sure">SURE</button>
+            <button class="modal-btn-cancel" id="modal-cancel">CANCEL</button>
+        </div>
+    </div>
+</div>
+
+<!-- INFO PANEL (JOURNAL) -->
+<div id="info-panel" class="info-panel-overlay">
+    <div class="info-panel">
+        <div class="info-panel-header">
+            <h2>📜 JOURNAL / WIKI</h2>
+            <button class="info-panel-close" onclick="UIManager.closeInfoPanel()">CLOSE</button>
+        </div>
+        <div class="info-panel-content" id="info-panel-content">
+            <div class="info-section">
+                <div class="info-section-title">🔰 BASIC INFO</div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Welcome, Adventurer!</div>
+                    <div>This is YOUR STORY IDLE. Explore the village, complete quests, and become a legend.</div>
+                </div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Controls</div>
+                    <div>• Use the CHOICES panel to navigate the village<br>• Click SET KEY mode to assign skills/items to action slots (1-9)<br>• Press number keys (1-9) to use assigned items/skills</div>
+                </div>
+            </div>
+            <div class="info-section">
+                <div class="info-section-title">⚔️ COMBAT (Coming Soon)</div>
+                <div class="info-entry locked">
+                    <div class="info-entry-title">???</div>
+                    <div>Fight enemies to gain experience and loot.</div>
+                </div>
+            </div>
+            <div class="info-section">
+                <div class="info-section-title">🏘️ LOCATIONS</div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Home</div>
+                    <div>Your safe haven. Sleep to restore health and stamina.</div>
+                </div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Alden Street</div>
+                    <div>Adventurer Guild, Monument, Tavern, Clinic</div>
+                </div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Trader's Row</div>
+                    <div>Traveling Merchant, Alchemy, Bank, Auction House, Black Market</div>
+                </div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Ironforge Street</div>
+                    <div>Blacksmith, Carpenter, Tinker, Armorer</div>
+                </div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Food Street</div>
+                    <div>Bakery, Butcher, Food Stand</div>
+                </div>
+                <div class="info-entry">
+                    <div class="info-entry-title">The Gate</div>
+                    <div>Forest, Stable, Cave</div>
+                </div>
+                <div class="info-entry">
+                    <div class="info-entry-title">Fields</div>
+                    <div>Training Area, Aether Specialist, Rice Fields</div>
+                </div>
+            </div>
+            <div class="info-section">
+                <div class="info-section-title">✨ DISCOVERIES</div>
+                <div class="info-entry locked">
+                    <div class="info-entry-title">???</div>
+                    <div>Discover new things by exploring the world!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- START SCREEN -->
+<div id="start-screen">
+    <h1 class="game-logo">YOUR STORY IDLE</h1>
+    
+    <div id="main-start-btn-container">
+        <button id="main-start-btn" onclick="UIManager.showSlots()">START YOUR STORY</button>
+    </div>
+
+    <div id="slots-wrapper">
+        <div class="start-screen-content">
+            <div class="slots-list" id="slots-container"></div>
+            
+            <div class="info-box">
+                <h3>📜 INFO</h3>
+                <div class="info-box-content" id="info-box-content">
+                    Hover over any slot or option to see details.
+                </div>
+            </div>
+        </div>
+        <button class="back-btn" onclick="UIManager.backToStart()" style="margin-top: 20px;">BACK</button>
+    </div>
+
+    <div class="creation-wrapper" id="creation-wrapper">
+        <div class="start-screen-content">
+            <div class="creation-box" id="creation-ui">
+                <button class="back-btn creation-back-btn" onclick="UIManager.cancelCreation()">← BACK</button>
+                <h2>NEW CHARACTER</h2>
+                <label style="display:block; text-align:center; margin-bottom:8px; color: var(--gold); font-family: Algerian; font-size:13px;">DIFFICULTY:</label>
+                <div class="options-grid">
+                    <div class="option-card" data-info="EASY MODE: Standard experience. Enemies are normal, resources plentiful. Perfect for beginners." onclick="UIManager.selectOption('mode', 'Easy', this)">EASY</div>
+                    <div class="option-card locked-hc" data-info="HARDCORE MODE: Permadeath enabled. Enemies hit harder. Complete Easy mode to unlock!" onclick="UIManager.selectOption('mode', 'Hardcore', this)">HARDCORE</div>
+                </div>
+                <label style="display:block; text-align:center; margin-top:12px; margin-bottom:8px; color: var(--gold); font-family: Algerian; font-size:13px;">SPAWN POINT:</label>
+                <div class="options-grid" style="display: flex; justify-content: center;">
+                    <div class="option-card" data-info="HOME: Your safe haven. Start with basic gear and a warm bed. Best for new adventurers." onclick="UIManager.selectOption('spawn', 'Home', this)">HOME</div>
+                </div>
+                <button class="btn-primary" onclick="UIManager.finishCreation()" style="margin-top: 15px;">START YOUR STORY</button>
+            </div>
+            
+            <div class="creation-info-box">
+                <h3>📜 INFO</h3>
+                <div class="info-box-content" id="creation-info-box-content">
+                    Select difficulty and spawn point to begin your adventure.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GAME UI -->
+<div class="game-container" id="game-ui">
+    <!-- LEFT PANEL -->
+    <div class="panel-container">
+        <div class="main-box flex-scroll" id="character-info-box" style="flex: 0.6;">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="UIManager.openTab(event, 'stats-tab')">STATS</button>
+                <button class="tab-btn" onclick="UIManager.openTab(event, 'equipment-tab')">EQUIPMENTS</button>
+                <button class="tab-btn" onclick="UIManager.openTab(event, 'gen-skills-tab')">GENERAL SKILLS</button>
+                <button class="tab-btn" onclick="UIManager.openTab(event, 'passive-skills-tab')">PASSIVE SKILLS</button>
+                <button class="tab-btn" onclick="UIManager.openTab(event, 'active-skills-tab')">ACTIVE SKILLS</button>
+            </div>
+            
+            <!-- STATS TAB -->
+            <div id="stats-tab" class="tab-content active">
+                <div class="tab-scroll-area">
+                    <div class="stats-container">
+                        <div class="player-info">
+                            <div class="player-name-age">
+                                <input type="text" id="player-name" maxlength="16" placeholder="NAME" value="ADVENTURER">
+                                <span id="player-age">AGE: 20</span>
+                            </div>
+                            <div class="level-container">
+                                <span>LEVEL <span id="player-level">1</span></span>
+                                <div class="xp-bar-container">
+                                    <div class="xp-fill" id="xp-fill" style="width: 0%;"></div>
+                                </div>
+                                <span class="xp-text" id="xp-text">0/100 XP</span>
+                            </div>
+                        </div>
+                        <div class="stats-columns">
+                            <div class="stat-col">
+                                <span class="stat-group-title">The Body</span>
+                                <div class="stat-line" onmouseenter="UIManager.showStatTooltip(event, 'Strength', GameState.stats.str, 10)" onmouseleave="UIManager.hideTooltip()">
+                                    <span class="stat-label">STRENGTH:</span><span class="stat-value" id="stat-str">1</span>
+                                </div>
+                                <div class="stat-line" onmouseenter="UIManager.showStatTooltip(event, 'Agility', GameState.stats.agi, 10)" onmouseleave="UIManager.hideTooltip()">
+                                    <span class="stat-label">AGILITY:</span><span class="stat-value" id="stat-agi">1</span>
+                                </div>
+                                <div class="stat-line" onmouseenter="UIManager.showStatTooltip(event, 'Fortitude', GameState.stats.fort, 10)" onmouseleave="UIManager.hideTooltip()">
+                                    <span class="stat-label">FORTITUDE:</span><span class="stat-value" id="stat-fort">1</span>
+                                </div>
+                            </div>
+                            <div class="stat-col">
+                                <span class="stat-group-title">The Mind</span>
+                                <div class="stat-line" onmouseenter="UIManager.showSimpleTooltip(event, 'Thinking: Affects skill cooldowns and strategy')" onmouseleave="UIManager.hideTooltip()">
+                                    <span class="stat-label">THINKING:</span><span class="stat-value" id="stat-think">1.0</span>
+                                </div>
+                                <div class="stat-line" onmouseenter="UIManager.showSimpleTooltip(event, 'Practical: Improves crafting and looting')" onmouseleave="UIManager.hideTooltip()">
+                                    <span class="stat-label">PRACTICAL:</span><span class="stat-value" id="stat-prac">1.0</span>
+                                </div>
+                                <div class="stat-line" onmouseenter="UIManager.showSimpleTooltip(event, 'Social: Better prices and dialogue options')" onmouseleave="UIManager.hideTooltip()">
+                                    <span class="stat-label">SOCIAL:</span><span class="stat-value" id="stat-soc">1.0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-col">
+                            <span class="stat-group-title">The Will</span>
+                            <div class="stat-line" onmouseenter="UIManager.showStatTooltip(event, 'Willpower', GameState.stats.will, 10)" onmouseleave="UIManager.hideTooltip()">
+                                <span class="stat-label">WILLPOWER:</span><span class="stat-value" id="stat-will">1</span>
+                            </div>
+                        </div>
+                        <div class="stats-divider"></div>
+                        <div class="stat-bars-list">
+                            <div class="stat-bar-line" onmouseenter="UIManager.showBarTooltip(event, 'Health', GameState.maxHealth)" onmouseleave="UIManager.hideTooltip()"><span class="stat-label">HEALTH:</span><span class="stat-value" id="stat-maxhealth">10</span></div>
+                            <div class="stat-bar-line" onmouseenter="UIManager.showBarTooltip(event, 'Stamina', GameState.maxStamina)" onmouseleave="UIManager.hideTooltip()"><span class="stat-label">STAMINA:</span><span class="stat-value" id="stat-maxstamina">10</span></div>
+                            <div class="stat-bar-line" onmouseenter="UIManager.showBarTooltip(event, 'Focus', GameState.maxFocus)" onmouseleave="UIManager.hideTooltip()"><span class="stat-label">FOCUS:</span><span class="stat-value" id="stat-maxfocus">10</span></div>
+                            <div class="stat-bar-line" onmouseenter="UIManager.showBarTooltip(event, 'Hunger', GameState.maxHunger)" onmouseleave="UIManager.hideTooltip()"><span class="stat-label">HUNGER:</span><span class="stat-value" id="stat-maxhunger">10</span></div>
+                            <div class="stat-bar-line" onmouseenter="UIManager.showBarTooltip(event, 'Aether', GameState.maxAether)" onmouseleave="UIManager.hideTooltip()"><span class="stat-label">AETHER:</span><span class="stat-value" id="stat-maxaether">10</span></div>
+                            <div class="stat-bar-line" onmouseenter="UIManager.showBarTooltip(event, 'Hearts', GameState.maxHearts)" onmouseleave="UIManager.hideTooltip()"><span class="stat-label">HEARTS:</span><span class="stat-value" id="stat-maxhearts">1</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EQUIPMENTS TAB -->
+            <div id="equipment-tab" class="tab-content">
+                <div class="tab-scroll-area">
+                    <div class="equip-grid" id="equip-container">
+                        <div class="equip-slot equip-size-50" data-type="ring" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-100" data-type="head" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-50" data-type="ring" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-75 align-right" data-type="pickaxe" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-100" data-type="mainhand" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-100" data-type="body" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-100" data-type="offhand" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-75 align-right" data-type="axe" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-50" data-type="ring" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-100" data-type="feet" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-50" data-type="ring" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-75 align-right" data-type="shovel" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-50 align-bottom" data-type="accessory" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-50 align-bottom" data-type="accessory" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-50 align-bottom" data-type="accessory" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                        <div class="equip-slot equip-size-75 align-right-bottom" data-type="scythe" onclick="GameEngine.unequipItem(this)" onmouseenter="UIManager.showEquipTooltip(this, event)" onmouseleave="UIManager.hideTooltip()"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GENERAL SKILLS TAB -->
+            <div id="gen-skills-tab" class="tab-content">
+                <div class="tab-scroll-area">
+                    <div class="skills-demo-grid">
+                        <div class="demo-skill-card" data-skill-name="GENERAL SKILL" onclick="UIManager.handleSkillClick(this)">
+                            <div class="demo-skill-name">GENERAL SKILL</div>
+                            <div class="demo-skill-desc">Swordsmanship / Smithing / Hunting / Trade</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASSIVE SKILLS TAB -->
+            <div id="passive-skills-tab" class="tab-content">
+                <div class="tab-scroll-area">
+                    <div class="skills-demo-grid">
+                        <div class="demo-skill-card" data-skill-name="PASSIVE SKILL" onclick="UIManager.handleSkillClick(this)">
+                            <div class="demo-skill-name">PASSIVE SKILL</div>
+                            <div class="demo-skill-desc">Tough Body / Fast Reflexes / Iron Will</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIVE SKILLS TAB -->
+            <div id="active-skills-tab" class="tab-content">
+                <div class="tab-scroll-area">
+                    <div class="skills-demo-grid">
+                        <div class="demo-skill-card" data-skill-name="FIREBALL" onclick="UIManager.handleSkillClick(this)">
+                            <div class="demo-skill-name">🔥 FIREBALL</div>
+                            <div class="demo-skill-desc">Launch a fireball at your enemy. Deals 15-25 fire damage.</div>
+                        </div>
+                        <div class="demo-skill-card" data-skill-name="HEAL" onclick="UIManager.handleSkillClick(this)">
+                            <div class="demo-skill-name">💚 HEAL</div>
+                            <div class="demo-skill-desc">Restore 20-30 health points.</div>
+                        </div>
+                        <div class="demo-skill-card" data-skill-name="LIGHTNING" onclick="UIManager.handleSkillClick(this)">
+                            <div class="demo-skill-name">⚡ LIGHTNING</div>
+                            <div class="demo-skill-desc">Strike your enemy with lightning. Deals 10-35 damage.</div>
+                        </div>
+                        <div class="demo-skill-card" data-skill-name="SHIELD" onclick="UIManager.handleSkillClick(this)">
+                            <div class="demo-skill-name">🛡️ SHIELD</div>
+                            <div class="demo-skill-desc">Increase defense for 3 turns.</div>
+                        </div>
+                    </div>
+                </div>
+				<div style="margin-top: 10px; text-align: center;">
+					<button id="active-skills-setkey" class="setkey-btn" onclick="UIManager.toggleActiveSkillsSetKey()">SET KEY OFF</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="resizer" id="left-resizer"><div class="resizer-line"></div></div>
+        
+        <div class="main-box flex-scroll" id="inventory-box" style="flex: 0.4;">
+            <div class="header-row">
+                <span class="section-header">INVENTORY</span>
+                <div class="coins-display-box" id="coins-display-box" onmouseenter="UIManager.updateCoinTooltip()" onmouseleave="UIManager.hideTooltip()">
+                    <span id="coins-display" class="coins-glow">0</span>
+                </div>
+                <button id="del-mode-btn" class="btn-delete-mode" onclick="UIManager.toggleDeleteMode()">DEL MODE OFF</button>
+                <button id="inventory-setkey" class="setkey-btn" onclick="UIManager.toggleInventorySetKey()">SET KEY OFF</button>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-buttons">
+                    <button class="filter-btn" data-filter="all" onclick="UIManager.setFilter('all')" onmouseenter="UIManager.showSimpleTooltip(event, 'Show all items')" onmouseleave="UIManager.hideTooltip()">ALL</button>
+                    <button class="filter-btn" data-filter="weapon" onclick="UIManager.setFilter('weapon')" onmouseenter="UIManager.showSimpleTooltip(event, 'Weapons')" onmouseleave="UIManager.hideTooltip()">W</button>
+                    <button class="filter-btn" data-filter="tool" onclick="UIManager.setFilter('tool')" onmouseenter="UIManager.showSimpleTooltip(event, 'Tools')" onmouseleave="UIManager.hideTooltip()">T</button>
+                    <button class="filter-btn" data-filter="armor" onclick="UIManager.setFilter('armor')" onmouseenter="UIManager.showSimpleTooltip(event, 'Armor')" onmouseleave="UIManager.hideTooltip()">A</button>
+                    <button class="filter-btn" data-filter="consumable" onclick="UIManager.setFilter('consumable')" onmouseenter="UIManager.showSimpleTooltip(event, 'Consumables')" onmouseleave="UIManager.hideTooltip()">C</button>
+                    <button class="filter-btn" data-filter="material" onclick="UIManager.setFilter('material')" onmouseenter="UIManager.showSimpleTooltip(event, 'Materials')" onmouseleave="UIManager.hideTooltip()">M</button>
+                </div>
+                <div class="sort-controls">
+                    <button class="sort-type-btn" id="sort-type-btn" onclick="UIManager.cycleSortType()" onmouseenter="UIManager.showSimpleTooltip(event, 'Sort by: Type / Name / Rarity')" onmouseleave="UIManager.hideTooltip()">TYPE</button>
+                    <button class="sort-dir-btn" id="sort-dir-btn" onclick="UIManager.toggleSortDir()" onmouseenter="UIManager.showSimpleTooltip(event, 'Ascending / Descending')" onmouseleave="UIManager.hideTooltip()">↓</button>
+                </div>
+            </div>
+            
+            <div class="inv-grid" id="inv-container"></div>
+        </div>
+    </div>
+
+    <!-- CENTER PANEL -->
+    <main class="center-panel">
+        <!-- EVENT AREA -->
+        <div class="event-area" id="event-area">
+            <div class="event-image-area" id="event-image-area">
+                IMAGE HERE
+            </div>
+            <div class="event-text-area" id="event-text-area">
+                <div class="event-title" id="event-title">Welcome, Adventurer!</div>
+                <div class="event-stats" id="event-stats">Explore the village and begin your journey...</div>
+            </div>
+        </div>
+        
+        <!-- Bottom Panel (Action Bar + Bars) -->
+        <div class="bottom-panel">
+            <!-- Action Bar (9 Slots) -->
+            <div class="action-bar" id="action-bar">
+                <div class="action-slot" data-slot="1" data-type="active" onclick="UIManager.handleActionSlotClick(1)">
+                    <div class="action-slot-number">1</div>
+                    <div class="action-slot-name" id="action-name-1">SKILL 1</div>
+                </div>
+                <div class="action-slot" data-slot="2" data-type="active" onclick="UIManager.handleActionSlotClick(2)">
+                    <div class="action-slot-number">2</div>
+                    <div class="action-slot-name" id="action-name-2">SKILL 2</div>
+                </div>
+                <div class="action-slot" data-slot="3" data-type="active" onclick="UIManager.handleActionSlotClick(3)">
+                    <div class="action-slot-number">3</div>
+                    <div class="action-slot-name" id="action-name-3">SKILL 3</div>
+                </div>
+                <div class="action-slot" data-slot="4" data-type="active" onclick="UIManager.handleActionSlotClick(4)">
+                    <div class="action-slot-number">4</div>
+                    <div class="action-slot-name" id="action-name-4">SKILL 4</div>
+                </div>
+                <div class="action-slot" data-slot="5" data-type="active" onclick="UIManager.handleActionSlotClick(5)">
+                    <div class="action-slot-number">5</div>
+                    <div class="action-slot-name" id="action-name-5">SKILL 5</div>
+                </div>
+                <div class="action-slot" data-slot="6" data-type="active" onclick="UIManager.handleActionSlotClick(6)">
+                    <div class="action-slot-number">6</div>
+                    <div class="action-slot-name" id="action-name-6">SKILL 6</div>
+                </div>
+                
+                <div class="action-divider"></div>
+                
+                <div class="action-slot" data-slot="7" data-type="consumable" onclick="UIManager.handleActionSlotClick(7)">
+                    <div class="action-slot-number">7</div>
+                    <div class="action-slot-name" id="action-name-7">FOOD</div>
+                </div>
+                <div class="action-slot" data-slot="8" data-type="consumable" onclick="UIManager.handleActionSlotClick(8)">
+                    <div class="action-slot-number">8</div>
+                    <div class="action-slot-name" id="action-name-8">POTION 1</div>
+                </div>
+                <div class="action-slot" data-slot="9" data-type="consumable" onclick="UIManager.handleActionSlotClick(9)">
+                    <div class="action-slot-number">9</div>
+                    <div class="action-slot-name" id="action-name-9">POTION 2</div>
+                </div>
+            </div>
+            
+            <!-- Bars Section -->
+            <div class="bars-section">
+                <div class="info-bar">
+                    <div class="location-display" id="location-display">📍 YOUR TOWN, HOME</div>
+                    <div class="datetime-display" id="datetime-display">
+						<div id="date-line"></div>
+						<div id="weather-line"></div>
+					</div>
+                </div>
+                <div class="status-grid">
+                    <div class="bars-top-row">
+                        <div class="col">
+                            <div class="bar" onmouseenter="UIManager.showBarTooltip(event, 'Focus', GameState.maxFocus)" onmouseleave="UIManager.hideTooltip()">
+                                <div id="focus-fill" class="bar-fill focus-color" style="width: 100%;"></div>
+                                <span id="focus-text" class="bar-text">10</span>
+                            </div>
+                            <div class="bar" onmouseenter="UIManager.showBarTooltip(event, 'Hunger', GameState.maxHunger)" onmouseleave="UIManager.hideTooltip()">
+                                <div id="hunger-fill" class="bar-fill hunger-color" style="width: 100%;"></div>
+                                <span id="hunger-text" class="bar-text">10</span>
+                            </div>
+                        </div>
+                        <div class="heart-box" id="heart-val" onmouseenter="UIManager.showBarTooltip(event, 'Hearts', GameState.maxHearts)" onmouseleave="UIManager.hideTooltip()">1</div>
+                        <div class="col">
+                            <div class="bar" onmouseenter="UIManager.showBarTooltip(event, 'Aether', GameState.maxAether)" onmouseleave="UIManager.hideTooltip()">
+                                <div id="aether-fill" class="bar-fill aether-color" style="width: 100%;"></div>
+                                <span id="aether-text" class="bar-text">10</span>
+                            </div>
+                            <div class="bar" onmouseenter="UIManager.showBarTooltip(event, 'Stamina', GameState.maxStamina)" onmouseleave="UIManager.hideTooltip()">
+                                <div id="stamina-fill" class="bar-fill stamina-color" style="width: 100%;"></div>
+                                <span id="stamina-text" class="bar-text">10</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bar health-bar" onmouseenter="UIManager.showBarTooltip(event, 'Health', GameState.maxHealth)" onmouseleave="UIManager.hideTooltip()">
+                        <div id="health-fill" class="bar-fill health-color" style="width: 100%;"></div>
+                        <span id="health-text" class="bar-text">10</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Section (Buttons) -->
+            <div class="action-section">
+                <div class="action-group-left">
+                    <button class="action-btn always-clickable" onclick="UIManager.openSettings()" onmouseenter="UIManager.showSimpleTooltip(event, 'Game Settings')" onmouseleave="UIManager.hideTooltip()">SETTINGS</button>
+                    <button class="action-btn always-clickable" id="menu-btn" onclick="UIManager.showMenuModal()" onmouseenter="UIManager.showSimpleTooltip(event, 'Main Menu')" onmouseleave="UIManager.hideTooltip()">MAIN MENU</button>
+                    <button class="info-btn always-clickable" onclick="UIManager.openInfoPanel()" onmouseenter="UIManager.showSimpleTooltip(event, 'Journal / Wiki')" onmouseleave="UIManager.hideTooltip()">INFO</button>
+                </div>
+                <div class="action-group-right">
+                    <button class="action-btn pause-btn" id="pause-btn" onclick="GameEngine.togglePause()" onmouseenter="UIManager.showSimpleTooltip(event, 'Pause Game')" onmouseleave="UIManager.hideTooltip()">PAUSE</button>
+                    <button class="action-btn save-btn always-clickable" onclick="GameEngine.manualSave()" onmouseenter="UIManager.showSimpleTooltip(event, 'Save Game')" onmouseleave="UIManager.hideTooltip()">SAVE</button>
+                    <div class="auto-save-check">
+                        <input type="checkbox" id="auto-save-toggle" checked>
+                        <label for="auto-save-toggle">AUTO SAVE</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- RIGHT PANEL - CHOICES -->
+    <aside class="side-panel" id="right-aside">
+        <div class="main-box flex-scroll" id="top-box" style="flex: 0.6;">
+            <div class="header-row" style="justify-content: space-between;">
+                <span class="section-header">MESSAGE LOG</span>
+                <div style="display:flex; gap:4px; align-items:center;">
+                    <button class="small-clear-btn" onclick="UIManager.clearLog()" onmouseenter="UIManager.showSimpleTooltip(event, 'Clear all messages')" onmouseleave="UIManager.hideTooltip()">CLEAR</button>
+                    <div class="max-msg-control">
+                        <span>MAX</span>
+                        <div class="msg-spinner">
+                            <button id="msg-up" onclick="UIManager.increaseMaxMsg()">▲</button>
+                            <button id="msg-down" onclick="UIManager.decreaseMaxMsg()">▼</button>
+                        </div>
+                        <input type="number" id="max-input" value="20" min="1" max="50" onchange="UIManager.updateMaxMsgs(this.value)">
+                    </div>
+                </div>
+            </div>
+            <div class="log-content" id="log-display"></div>
+        </div>
+        
+        <div class="resizer" id="right-resizer"><div class="resizer-line"></div></div>
+        
+        <div class="main-box" id="bottom-box" style="flex: 0.4;">
+            <div class="header-row">
+                <span class="section-header" id="choices-header">CHOICES</span>
+            </div>
+            <div class="choices-container" id="choices-container"></div>
+        </div>
+    </aside>
+</div>
+<script type="module" src="js/main.js"></script></body>
+</html>
