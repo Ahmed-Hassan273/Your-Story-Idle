@@ -2,7 +2,7 @@
 // ========== YOUR STORY IDLE - MAIN ==========
 // ============================================
 
-import * as GameEngine from './game-engine.js';
+import { GameEngine } from './game-engine.js';
 import { UIManager } from './ui-manager.js';
 
 window.GameEngine = GameEngine;
